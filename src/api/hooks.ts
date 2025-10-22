@@ -1,34 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import { apiClient, handleApiError } from "../api/client";
+import { type Ref } from "vue";
+import { apiClientWithRetry, handleApiError, clearAuthToken } from "../api/client";
 import type { paths } from "../types/api";
 
 // 型定義のエイリアス
 type LoginRequest = NonNullable<
   paths["/v1/login"]["post"]["requestBody"]
 >["content"]["application/json"];
-type LoginResponse = NonNullable<
-  paths["/v1/login"]["post"]["responses"]["200"]
->["content"]["application/json"];
 
-type TaskListResponse = NonNullable<
-  paths["/v1/tasks"]["get"]["responses"]["200"]
->["content"]["application/json"];
 type TaskCreateRequest = NonNullable<
   paths["/v1/tasks"]["post"]["requestBody"]
 >["content"]["application/json"];
-type TaskCreateResponse = NonNullable<
-  paths["/v1/tasks"]["post"]["responses"]["200"]
->["content"]["application/json"];
 
-type TaskResponse = NonNullable<
-  paths["/v1/tasks/{task}"]["get"]["responses"]["200"]
->["content"]["application/json"];
 type TaskUpdateRequest = NonNullable<
   paths["/v1/tasks/{task}"]["put"]["requestBody"]
 >["content"]["application/json"];
 
-type UserResponse = NonNullable<
-  paths["/v1/users/me"]["get"]["responses"]["200"]
+type TaskActionCreateRequest = NonNullable<
+  paths["/v1/tasks/{task}/actions"]["post"]["requestBody"]
+>["content"]["application/json"];
+type TaskActionUpdateRequest = NonNullable<
+  paths["/v1/tasks/{task}/actions/{action}"]["put"]["requestBody"]
 >["content"]["application/json"];
 
 // 認証関連のフック
@@ -36,9 +28,9 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: async (data: LoginRequest) => {
       console.log("login data", data);
-      const response = await apiClient.POST("/v1/login", {
+      const response = await apiClientWithRetry.POST("/v1/login", {
         body: data,
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -53,7 +45,7 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.POST("/v1/logout");
+      const response = await apiClientWithRetry.POST("/v1/logout" as any);
       if (response.error) {
         throw new Error("Logout failed");
       }
@@ -62,6 +54,9 @@ export const useLogout = () => {
     onSuccess: () => {
       // ログアウト後、すべてのキャッシュをクリア
       queryClient.clear();
+      // トークンをクリア
+      clearAuthToken();
+      localStorage.removeItem("auth_token");
     },
     onError: handleApiError,
   });
@@ -70,7 +65,7 @@ export const useLogout = () => {
 export const useRefreshToken = () => {
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.POST("/v1/refresh");
+      const response = await apiClientWithRetry.POST("/v1/refresh" as any);
       if (response.error) {
         throw response.error;
       }
@@ -85,7 +80,7 @@ export const useCurrentUser = () => {
   return useQuery({
     queryKey: ["user", "me"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/users/me");
+      const response = await apiClientWithRetry.GET("/v1/users/me" as any);
       if (response.error) {
         throw response.error;
       }
@@ -98,7 +93,7 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/users");
+      const response = await apiClientWithRetry.GET("/v1/users" as any);
       if (response.error) {
         throw response.error;
       }
@@ -108,26 +103,28 @@ export const useUsers = () => {
 };
 
 // タスク関連のフック
-export const useTasks = (params?: {
-  is_public?: boolean;
-  is_done?: boolean;
-  expired_before?: string;
-  expired_after?: string;
-  created_user_id?: number;
-  assigned_user_id?: number;
-  sort_by?: "title" | "expired_at" | "created_at" | "updated_at";
-  sort_order?: "asc" | "desc";
-  created_user_ids?: number[];
-  assigned_user_ids?: number[];
-}) => {
+export const useTasks = (
+  params?: Ref<{
+    is_public?: boolean;
+    is_done?: boolean;
+    expired_before?: string;
+    expired_after?: string;
+    created_user_id?: number;
+    assigned_user_id?: number;
+    sort_by?: "title" | "expired_at" | "created_at" | "updated_at";
+    sort_order?: "asc" | "desc";
+    created_user_ids?: number[];
+    assigned_user_ids?: number[];
+  }>
+) => {
   return useQuery({
-    queryKey: ["tasks", params],
+    queryKey: ["tasks", params?.value],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/tasks", {
+      const response = await apiClientWithRetry.GET("/v1/tasks", {
         params: {
-          query: params,
+          query: params?.value,
         },
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -140,11 +137,11 @@ export const useTask = (taskId: number) => {
   return useQuery({
     queryKey: ["task", taskId],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/tasks/{task}", {
+      const response = await apiClientWithRetry.GET("/v1/tasks/{task}", {
         params: {
           path: { task: taskId },
         },
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -158,9 +155,9 @@ export const useCreateTask = () => {
 
   return useMutation({
     mutationFn: async (data: TaskCreateRequest) => {
-      const response = await apiClient.POST("/v1/tasks", {
+      const response = await apiClientWithRetry.POST("/v1/tasks", {
         body: data,
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -179,12 +176,12 @@ export const useUpdateTask = () => {
 
   return useMutation({
     mutationFn: async ({ taskId, data }: { taskId: number; data: TaskUpdateRequest }) => {
-      const response = await apiClient.PUT("/v1/tasks/{task}", {
+      const response = await apiClientWithRetry.PUT("/v1/tasks/{task}", {
         params: {
           path: { task: taskId },
         },
         body: data,
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -204,11 +201,11 @@ export const useDeleteTask = () => {
 
   return useMutation({
     mutationFn: async (taskId: number) => {
-      const response = await apiClient.DELETE("/v1/tasks/{task}", {
+      const response = await apiClientWithRetry.DELETE("/v1/tasks/{task}", {
         params: {
           path: { task: taskId },
         },
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
@@ -239,15 +236,112 @@ export const useUserTasks = (params?: {
   return useQuery({
     queryKey: ["user", "tasks", params],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/users/me/tasks", {
+      const response = await apiClientWithRetry.GET("/v1/users/me/tasks", {
         params: {
           query: params,
         },
-      });
+      } as any);
       if (response.error) {
         throw response.error;
       }
       return response.data;
     },
+  });
+};
+
+// タスクアクション関連のフック
+export const useTaskActions = (taskId: number) => {
+  return useQuery({
+    queryKey: ["task", taskId, "actions"],
+    queryFn: async () => {
+      const response = await apiClientWithRetry.GET("/v1/tasks/{task}/actions", {
+        params: {
+          path: { task: taskId },
+        },
+      } as any);
+      if (response.error) {
+        throw response.error;
+      }
+      return response.data;
+    },
+  });
+};
+
+export const useCreateTaskAction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ taskId, data }: { taskId: number; data: TaskActionCreateRequest }) => {
+      const response = await apiClientWithRetry.POST("/v1/tasks/{task}/actions", {
+        params: {
+          path: { task: taskId },
+        },
+        body: data,
+      } as any);
+      if (response.error) {
+        throw response.error;
+      }
+      return response.data;
+    },
+    onSuccess: (_, { taskId }) => {
+      // アクション作成後、該当タスクのアクション一覧を再取得
+      queryClient.invalidateQueries({ queryKey: ["task", taskId, "actions"] });
+    },
+    onError: handleApiError,
+  });
+};
+
+export const useUpdateTaskAction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      actionId,
+      data,
+    }: {
+      taskId: number;
+      actionId: number;
+      data: TaskActionUpdateRequest;
+    }) => {
+      const response = await apiClientWithRetry.PUT("/v1/tasks/{task}/actions/{action}", {
+        params: {
+          path: { task: taskId, action: actionId },
+        },
+        body: data,
+      } as any);
+      if (response.error) {
+        throw response.error;
+      }
+      return response.data;
+    },
+    onSuccess: (_, { taskId }) => {
+      // アクション更新後、該当タスクのアクション一覧を再取得
+      queryClient.invalidateQueries({ queryKey: ["task", taskId, "actions"] });
+    },
+    onError: handleApiError,
+  });
+};
+
+export const useDeleteTaskAction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ taskId, actionId }: { taskId: number; actionId: number }) => {
+      const response = await apiClientWithRetry.DELETE("/v1/tasks/{task}/actions/{action}", {
+        params: {
+          path: { task: taskId, action: actionId },
+        },
+      } as any);
+      if (response.error) {
+        throw response.error;
+      }
+      return response.data;
+    },
+    onSuccess: (_, { taskId }) => {
+      // アクション削除後、該当タスクのアクション一覧を再取得
+      queryClient.invalidateQueries({ queryKey: ["task", taskId, "actions"] });
+    },
+    onError: handleApiError,
   });
 };

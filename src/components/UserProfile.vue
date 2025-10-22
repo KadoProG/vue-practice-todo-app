@@ -58,10 +58,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { apiClient, clearAuthToken, handleApiError } from "../api/client";
+import { apiClientWithRetry, clearAuthToken, handleApiError } from "../api/client";
+import { useLogout } from "../api/hooks";
 import type { paths } from "../types/api";
 
 const router = useRouter();
+
+// ログアウトフックを使用
+const logoutMutation = useLogout();
 
 // 型定義
 type UserResource =
@@ -78,7 +82,7 @@ const fetchUserInfo = async () => {
   errorMessage.value = "";
 
   try {
-    const { data, error } = await apiClient.GET("/v1/users/me");
+    const { data, error } = await apiClientWithRetry.GET("/v1/users/me" as any);
 
     if (error) {
       if (error.status === 401) {
@@ -112,15 +116,12 @@ const refreshUserInfo = () => {
 // ログアウト処理
 const handleLogout = async () => {
   try {
-    await apiClient.POST("/v1/logout");
+    await logoutMutation.mutateAsync();
+    // ログインページにリダイレクト
+    router.push("/login");
   } catch (err) {
     console.error("Logout error:", err);
-  } finally {
-    // トークンをクリア
-    clearAuthToken();
-    localStorage.removeItem("auth_token");
-
-    // ログインページにリダイレクト
+    // エラーが発生してもログインページにリダイレクト
     router.push("/login");
   }
 };

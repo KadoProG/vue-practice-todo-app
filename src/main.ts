@@ -1,8 +1,21 @@
 import { createApp } from "vue";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import router from "./router";
+import { setAuthToken } from "./api/client";
 
 import App from "./App.vue";
+
+// アプリケーション起動時にトークンを復元
+const initializeAuth = () => {
+  const token = localStorage.getItem("auth_token");
+  if (token) {
+    console.log("Restoring auth token from localStorage");
+    setAuthToken(token);
+  }
+};
+
+// トークン復元を実行
+initializeAuth();
 
 const app = createApp(App);
 

@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { apiClient, setAuthToken, handleApiError } from "../api/client";
+import { apiClientWithRetry, setAuthToken, handleApiError } from "../api/client";
 import type { paths } from "../types/api";
 
 const router = useRouter();
@@ -63,12 +63,12 @@ const handleLogin = async () => {
   errorMessage.value = "";
 
   try {
-    const { data, error } = await apiClient.POST("/v1/login", {
+    const { data, error } = await apiClientWithRetry.POST("/v1/login", {
       body: {
         email: form.email,
         password: form.password,
       },
-    });
+    } as any);
 
     if (error) {
       if (error.status === 401) {
