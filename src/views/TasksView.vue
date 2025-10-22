@@ -1,8 +1,12 @@
 <template>
-  <div class="tasks-container">
-    <div class="tasks-header">
-      <h1>タスク一覧</h1>
-      <button @click="() => refreshTasks()" class="refresh-btn" :disabled="loading">
+  <div class="tasks-container bg-gray-50 min-h-screen p-6">
+    <div class="tasks-header bg-white rounded-lg shadow-md p-6 mb-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">タスク一覧</h1>
+      <button
+        @click="() => refreshTasks()"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+        :disabled="loading"
+      >
         {{ loading ? "読み込み中..." : "更新" }}
       </button>
     </div>
