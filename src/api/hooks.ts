@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
 import { type Ref } from "vue";
-import { apiClientWithRetry, handleApiError, clearAuthToken } from "../api/client";
-import type { paths } from "../types/api";
+import { apiClientWithRetry, handleApiError, clearAuthToken } from "@/api/client";
+import type { paths } from "@/types/api";
 
 // 型定義のエイリアス
 type LoginRequest = NonNullable<

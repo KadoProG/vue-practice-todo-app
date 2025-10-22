@@ -51,8 +51,8 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { apiClientWithRetry, setAuthToken, handleApiError } from "../api/client";
-import type { paths } from "../types/api";
+import { apiClientWithRetry, setAuthToken, handleApiError } from "@/api/client";
+import type { paths } from "@/types/api";
 
 const router = useRouter();
 

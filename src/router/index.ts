@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import { useUserStore } from "../stores/user";
+import HomeView from "@/views/HomeView.vue";
+import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,24 +13,24 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: () => import("../views/LoginView.vue"),
+      component: () => import("@/views/LoginView.vue"),
     },
     {
       path: "/profile",
       name: "profile",
-      component: () => import("../views/ProfileView.vue"),
+      component: () => import("@/views/ProfileView.vue"),
       meta: { requiresAuth: true },
     },
     {
       path: "/tasks",
       name: "tasks",
-      component: () => import("../views/TasksView.vue"),
+      component: () => import("@/views/TasksView.vue"),
       meta: { requiresAuth: true },
     },
     {
       path: "/tasks/:id",
       name: "task-detail",
-      component: () => import("../views/TaskDetailView.vue"),
+      component: () => import("@/views/TaskDetailView.vue"),
       meta: { requiresAuth: true },
     },
   ],

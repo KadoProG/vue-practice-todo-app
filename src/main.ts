@@ -1,11 +1,11 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { VueQueryPlugin } from "@tanstack/vue-query";
-import router from "./router";
-import { setAuthToken } from "./api/client";
+import router from "@/router";
+import { setAuthToken } from "@/api/client";
 
-import App from "./App.vue";
-import "./assets/main.css";
+import App from "@/App.vue";
+import "@/assets/main.css";
 
 // アプリケーション起動時にトークンを復元
 const initializeAuth = () => {

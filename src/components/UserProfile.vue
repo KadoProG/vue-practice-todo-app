@@ -75,9 +75,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { apiClientWithRetry, clearAuthToken, handleApiError } from "../api/client";
-import { useLogout } from "../api/hooks";
-import type { paths } from "../types/api";
+import { apiClientWithRetry, clearAuthToken, handleApiError } from "@/api/client";
+import { useLogout } from "@/api/hooks";
+import type { paths } from "@/types/api";
 
 const router = useRouter();
 

@@ -1,8 +1,8 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { apiClientWithRetry, clearAuthToken } from "../api/client";
-import { useLogout } from "../api/hooks";
-import type { paths } from "../types/api";
+import { apiClientWithRetry, clearAuthToken } from "@/api/client";
+import { useLogout } from "@/api/hooks";
+import type { paths } from "@/types/api";
 
 // 型定義
 type UserResource =

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { setAuthToken } from "../api/client";
+import { setAuthToken } from "@/api/client";
 
 // ページ読み込み時に認証トークンを設定
 onMounted(() => {

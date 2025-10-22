@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
-import type { paths } from "../types/api";
-import { env } from "../config/env";
+import type { paths } from "@/types/api";
+import { env } from "@/config/env";
 
 // APIクライアントを作成
 export const apiClient = createClient<paths>({
