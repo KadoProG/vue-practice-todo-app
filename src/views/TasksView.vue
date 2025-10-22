@@ -129,7 +129,8 @@ const errorMessage = computed(() => {
 
 // フィルター適用
 const applyFilters = () => {
-  // フィルターが変更されると自動的にクエリが再実行される
+  // フィルターが変更されたら即座に再fetch
+  refreshTasks();
 };
 
 // タスク詳細へ遷移
