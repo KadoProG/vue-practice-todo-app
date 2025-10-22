@@ -30,7 +30,7 @@ export const useLogin = () => {
       console.log("login data", data);
       const response = await apiClientWithRetry.POST("/v1/login", {
         body: data,
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -45,7 +45,7 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClientWithRetry.POST("/v1/logout" as any);
+      const response = await apiClientWithRetry.POST("/v1/logout", {});
       if (response.error) {
         throw new Error("Logout failed");
       }
@@ -65,7 +65,7 @@ export const useLogout = () => {
 export const useRefreshToken = () => {
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClientWithRetry.POST("/v1/refresh" as any);
+      const response = await apiClientWithRetry.POST("/v1/refresh", {});
       if (response.error) {
         throw response.error;
       }
@@ -80,7 +80,7 @@ export const useCurrentUser = () => {
   return useQuery({
     queryKey: ["user", "me"],
     queryFn: async () => {
-      const response = await apiClientWithRetry.GET("/v1/users/me" as any);
+      const response = await apiClientWithRetry.GET("/v1/users/me", {});
       if (response.error) {
         throw response.error;
       }
@@ -93,7 +93,7 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await apiClientWithRetry.GET("/v1/users" as any);
+      const response = await apiClientWithRetry.GET("/v1/users", {});
       if (response.error) {
         throw response.error;
       }
@@ -124,7 +124,7 @@ export const useTasks = (
         params: {
           query: params?.value,
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -133,20 +133,24 @@ export const useTasks = (
   });
 };
 
-export const useTask = (taskId: number) => {
+export const useTask = (taskId: number | null) => {
   return useQuery({
     queryKey: ["task", taskId],
     queryFn: async () => {
+      if (!taskId) {
+        throw new Error("Task ID is required");
+      }
       const response = await apiClientWithRetry.GET("/v1/tasks/{task}", {
         params: {
           path: { task: taskId },
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
       return response.data;
     },
+    enabled: !!taskId,
   });
 };
 
@@ -157,7 +161,7 @@ export const useCreateTask = () => {
     mutationFn: async (data: TaskCreateRequest) => {
       const response = await apiClientWithRetry.POST("/v1/tasks", {
         body: data,
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -181,7 +185,7 @@ export const useUpdateTask = () => {
           path: { task: taskId },
         },
         body: data,
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -205,7 +209,7 @@ export const useDeleteTask = () => {
         params: {
           path: { task: taskId },
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -240,7 +244,7 @@ export const useUserTasks = (params?: {
         params: {
           query: params,
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -250,20 +254,24 @@ export const useUserTasks = (params?: {
 };
 
 // タスクアクション関連のフック
-export const useTaskActions = (taskId: number) => {
+export const useTaskActions = (taskId: number | null) => {
   return useQuery({
     queryKey: ["task", taskId, "actions"],
     queryFn: async () => {
+      if (!taskId) {
+        throw new Error("Task ID is required");
+      }
       const response = await apiClientWithRetry.GET("/v1/tasks/{task}/actions", {
         params: {
           path: { task: taskId },
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
       return response.data;
     },
+    enabled: !!taskId,
   });
 };
 
@@ -277,7 +285,7 @@ export const useCreateTaskAction = () => {
           path: { task: taskId },
         },
         body: data,
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -309,7 +317,7 @@ export const useUpdateTaskAction = () => {
           path: { task: taskId, action: actionId },
         },
         body: data,
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }
@@ -332,7 +340,7 @@ export const useDeleteTaskAction = () => {
         params: {
           path: { task: taskId, action: actionId },
         },
-      } as any);
+      });
       if (response.error) {
         throw response.error;
       }

@@ -125,16 +125,19 @@ export const handleApiError = (error: unknown) => {
 };
 
 // リトライ機能付きAPIクライアントのラッパー
+// Note: 型の複雑さのため、any を使用しています
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const apiClientWithRetry = {
-  GET: <T extends keyof paths>(path: T, options?: Parameters<typeof apiClient.GET>[1]) =>
-    apiCallWithRetry(() => apiClient.GET(path, options)) as any,
+  GET: <T extends keyof paths>(path: T, options?: any) =>
+    apiCallWithRetry(() => apiClient.GET(path as any, options as any)) as any,
 
-  POST: <T extends keyof paths>(path: T, options?: Parameters<typeof apiClient.POST>[1]) =>
-    apiCallWithRetry(() => apiClient.POST(path, options)) as any,
+  POST: <T extends keyof paths>(path: T, options?: any) =>
+    apiCallWithRetry(() => apiClient.POST(path as any, options as any)) as any,
 
-  PUT: <T extends keyof paths>(path: T, options?: Parameters<typeof apiClient.PUT>[1]) =>
-    apiCallWithRetry(() => apiClient.PUT(path, options)) as any,
+  PUT: <T extends keyof paths>(path: T, options?: any) =>
+    apiCallWithRetry(() => apiClient.PUT(path as any, options as any)) as any,
 
-  DELETE: <T extends keyof paths>(path: T, options?: Parameters<typeof apiClient.DELETE>[1]) =>
-    apiCallWithRetry(() => apiClient.DELETE(path, options)) as any,
+  DELETE: <T extends keyof paths>(path: T, options?: any) =>
+    apiCallWithRetry(() => apiClient.DELETE(path as any, options as any)) as any,
 };
+/* eslint-enable @typescript-eslint/no-explicit-any */
