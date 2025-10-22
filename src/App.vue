@@ -1,9 +1,7 @@
 <template>
   <div id="app" class="min-h-screen">
     <nav class="bg-slate-700 shadow-md">
-      <div
-        class="max-w-6xl mx-auto px-5 flex justify-between items-center h-15 md:flex-row flex-col md:h-15 h-auto md:py-0 py-4"
-      >
+      <div class="flex-shrink-0 mx-auto px-5 flex justify-between items-center h-15 w-full">
         <router-link
           to="/"
           class="text-white no-underline text-xl font-semibold hover:text-blue-400 transition-colors duration-300"

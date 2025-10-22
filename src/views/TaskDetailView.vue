@@ -6,7 +6,7 @@
       {{ error }}
     </div>
 
-    <div v-else-if="task" class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div v-else-if="task" class="bg-white rounded-lg shadow-md overflow-hidden mx-auto">
       <!-- ヘッダー -->
       <div
         class="flex justify-between items-start p-8 bg-gray-50 border-b border-gray-200 md:flex-row flex-col md:gap-0 gap-5"

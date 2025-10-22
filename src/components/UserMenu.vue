@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex items-center">
+  <div class="relative flex items-center justify-center">
     <div
       @click="toggleMenu"
       :class="[
