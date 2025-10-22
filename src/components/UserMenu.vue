@@ -104,6 +104,20 @@ const goToLogin = () => {
   router.push("/login");
 };
 
+// ログアウト処理
+const handleLogout = async () => {
+  closeMenu();
+  try {
+    await userStore.logout();
+    // ログアウト後、ログインページにリダイレクト
+    router.push("/login");
+  } catch (err) {
+    console.error("Logout error:", err);
+    // エラーが発生してもログインページにリダイレクト
+    router.push("/login");
+  }
+};
+
 // クリック外部でメニューを閉じる
 const handleClickOutside = (event: Event) => {
   const target = event.target as HTMLElement;

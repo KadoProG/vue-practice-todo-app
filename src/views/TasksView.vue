@@ -97,8 +97,6 @@ const queryParams = computed(() => {
   if (filters.value.isDone !== null) {
     params.is_done = filters.value.isDone;
   }
-  // TODO BEの実装にミスがあるため一旦コメントアウト
-  params.is_done = undefined;
 
   if (filters.value.isPublic) {
     params.is_public = true;
