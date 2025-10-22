@@ -355,7 +355,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": string;
+          "application/json": {
+            token: string;
+          };
         };
       };
       /** @description 未認証 */

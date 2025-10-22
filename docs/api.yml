@@ -23,7 +23,12 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  token:
+                    type: string
+                required:
+                  - token
         401:
           description: 未認証
           content:
