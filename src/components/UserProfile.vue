@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-5"
-  >
+  <div class="flex justify-center items-center min-h-screen bg-gray-50 p-5">
     <div class="bg-white rounded-xl shadow-2xl p-10 w-full max-w-lg">
       <h2 class="text-center text-gray-800 mb-8 text-3xl font-semibold">ユーザー情報</h2>
 
