@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import RegistrationForm from "./components/RegistrationForm.vue";
+import ApiExample from "./components/ApiExample.vue";
 </script>
 
 <template>
   <div id="app">
     <RegistrationForm />
+    <hr style="margin: 40px 0" />
+    <ApiExample />
   </div>
 </template>
 
