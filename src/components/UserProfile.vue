@@ -1,55 +1,74 @@
 <template>
-  <div class="user-profile">
-    <div class="profile-card">
-      <h2 class="profile-title">ユーザー情報</h2>
+  <div
+    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-5"
+  >
+    <div class="bg-white rounded-xl shadow-2xl p-10 w-full max-w-lg">
+      <h2 class="text-center text-gray-800 mb-8 text-3xl font-semibold">ユーザー情報</h2>
 
-      <div v-if="isLoading" class="loading">読み込み中...</div>
+      <div v-if="isLoading" class="text-center text-gray-600 text-base py-10">読み込み中...</div>
 
-      <div v-else-if="errorMessage" class="error-message">
+      <div
+        v-else-if="errorMessage"
+        class="bg-red-50 text-red-700 px-4 py-3 rounded-lg border border-red-200 text-sm text-center mb-5"
+      >
         {{ errorMessage }}
       </div>
 
-      <div v-else-if="user" class="user-info">
-        <div class="info-item">
-          <label class="info-label">ID:</label>
-          <span class="info-value">{{ user.id }}</span>
+      <div v-else-if="user" class="flex flex-col gap-4 mb-8">
+        <div class="flex items-center py-3 border-b border-gray-200">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">ID:</label>
+          <span class="text-gray-800 text-sm flex-1">{{ user.id }}</span>
         </div>
 
-        <div class="info-item">
-          <label class="info-label">名前:</label>
-          <span class="info-value">{{ user.name }}</span>
+        <div class="flex items-center py-3 border-b border-gray-200">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">名前:</label>
+          <span class="text-gray-800 text-sm flex-1">{{ user.name }}</span>
         </div>
 
-        <div class="info-item">
-          <label class="info-label">メールアドレス:</label>
-          <span class="info-value">{{ user.email }}</span>
+        <div class="flex items-center py-3 border-b border-gray-200">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">メールアドレス:</label>
+          <span class="text-gray-800 text-sm flex-1">{{ user.email }}</span>
         </div>
 
-        <div class="info-item">
-          <label class="info-label">登録日:</label>
-          <span class="info-value">{{ formatDate(user.created_at) }}</span>
+        <div class="flex items-center py-3 border-b border-gray-200">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">登録日:</label>
+          <span class="text-gray-800 text-sm flex-1">{{ formatDate(user.created_at) }}</span>
         </div>
 
-        <div class="info-item">
-          <label class="info-label">最終更新日:</label>
-          <span class="info-value">{{ formatDate(user.updated_at) }}</span>
+        <div class="flex items-center py-3 border-b border-gray-200">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">最終更新日:</label>
+          <span class="text-gray-800 text-sm flex-1">{{ formatDate(user.updated_at) }}</span>
         </div>
 
-        <div class="info-item">
-          <label class="info-label">メール認証:</label>
-          <span class="info-value">
-            <span :class="['status-badge', user.email_verified_at ? 'verified' : 'unverified']">
+        <div class="flex items-center py-3">
+          <label class="font-semibold text-gray-600 min-w-[120px] text-sm">メール認証:</label>
+          <span class="text-sm flex-1">
+            <span
+              :class="[
+                'px-3 py-1 rounded-full text-xs font-semibold',
+                user.email_verified_at ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
+              ]"
+            >
               {{ user.email_verified_at ? "認証済み" : "未認証" }}
             </span>
           </span>
         </div>
       </div>
 
-      <div class="actions">
-        <button @click="refreshUserInfo" class="refresh-button" :disabled="isLoading">
+      <div class="flex gap-3 justify-center">
+        <button
+          @click="refreshUserInfo"
+          class="px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-200 border-none bg-gray-600 text-white hover:bg-gray-500 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+          :disabled="isLoading"
+        >
           情報を更新
         </button>
-        <button @click="handleLogout" class="logout-button">ログアウト</button>
+        <button
+          @click="handleLogout"
+          class="px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-200 border-none bg-red-600 text-white hover:bg-red-700 hover:-translate-y-0.5"
+        >
+          ログアウト
+        </button>
       </div>
     </div>
   </div>
@@ -145,139 +164,3 @@ onMounted(() => {
   fetchUserInfo();
 });
 </script>
-
-<style scoped>
-.user-profile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-
-.profile-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  width: 100%;
-  max-width: 500px;
-}
-
-.profile-title {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.loading {
-  text-align: center;
-  color: #666;
-  font-size: 16px;
-  padding: 40px 0;
-}
-
-.error-message {
-  background: #fee;
-  color: #c33;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #fcc;
-  font-size: 14px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 30px;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.info-item:last-child {
-  border-bottom: none;
-}
-
-.info-label {
-  font-weight: 600;
-  color: #555;
-  min-width: 120px;
-  font-size: 14px;
-}
-
-.info-value {
-  color: #333;
-  font-size: 14px;
-  flex: 1;
-}
-
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-badge.verified {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-badge.unverified {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.refresh-button,
-.logout-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-.refresh-button {
-  background: #6c757d;
-  color: white;
-}
-
-.refresh-button:hover:not(:disabled) {
-  background: #5a6268;
-  transform: translateY(-1px);
-}
-
-.refresh-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.logout-button {
-  background: #dc3545;
-  color: white;
-}
-
-.logout-button:hover {
-  background: #c82333;
-  transform: translateY(-1px);
-}
-</style>

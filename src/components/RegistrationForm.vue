@@ -1,40 +1,48 @@
 <template>
-  <div class="registration-form">
-    <h2>新規登録</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="username">ユーザー名 <span class="required">*</span></label>
+  <div class="max-w-lg mx-auto p-8 bg-white border border-gray-200 rounded-lg shadow-md">
+    <h2 class="mb-8 text-2xl font-normal text-gray-800">新規登録</h2>
+    <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="username" class="block mb-1.5 text-gray-800 text-sm">
+          ユーザー名 <span class="text-red-600">*</span>
+        </label>
         <input
           id="username"
           v-model="formData.username"
           type="text"
           required
           placeholder="ユーザー名を入力"
+          class="w-full px-2.5 py-2.5 border border-gray-300 rounded text-sm box-border transition-colors focus:outline-none focus:border-gray-600 focus:shadow-sm"
         />
       </div>
 
-      <div class="form-group">
-        <label for="email">メールアドレス <span class="required">*</span></label>
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="block mb-1.5 text-gray-800 text-sm">
+          メールアドレス <span class="text-red-600">*</span>
+        </label>
         <input
           id="email"
           v-model="formData.email"
           type="email"
           required
           placeholder="example@example.com"
+          class="w-full px-2.5 py-2.5 border border-gray-300 rounded text-sm box-border transition-colors focus:outline-none focus:border-gray-600 focus:shadow-sm"
         />
       </div>
 
-      <div class="form-group checkbox-group">
-        <label class="checkbox-label">
-          <input v-model="usePassword" type="checkbox" />
+      <div class="my-5">
+        <label class="flex items-center cursor-pointer text-sm select-none">
+          <input v-model="usePassword" type="checkbox" class="w-4 h-4 mr-2 cursor-pointer" />
           パスワードを設定する
         </label>
       </div>
 
       <!-- パスワードフィールド（チェックボックスがONの時のみ表示） -->
       <template v-if="usePassword">
-        <div class="form-group">
-          <label for="password">パスワード <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="password" class="block mb-1.5 text-gray-800 text-sm">
+            パスワード <span class="text-red-600">*</span>
+          </label>
           <input
             id="password"
             v-model="formData.password"
@@ -42,30 +50,46 @@
             :required="usePassword"
             placeholder="8文字以上"
             minlength="8"
+            class="w-full px-2.5 py-2.5 border border-gray-300 rounded text-sm box-border transition-colors focus:outline-none focus:border-gray-600 focus:shadow-sm"
           />
         </div>
 
-        <div class="form-group">
-          <label for="confirmPassword">パスワード確認 <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="confirmPassword" class="block mb-1.5 text-gray-800 text-sm">
+            パスワード確認 <span class="text-red-600">*</span>
+          </label>
           <input
             id="confirmPassword"
             v-model="formData.confirmPassword"
             type="password"
             :required="usePassword"
             placeholder="パスワードを再入力"
+            class="w-full px-2.5 py-2.5 border border-gray-300 rounded text-sm box-border transition-colors focus:outline-none focus:border-gray-600 focus:shadow-sm"
           />
-          <span v-if="passwordMismatch" class="error-message">パスワードが一致しません</span>
+          <span v-if="passwordMismatch" class="block text-red-600 text-xs mt-1"
+            >パスワードが一致しません</span
+          >
         </div>
       </template>
 
-      <div class="form-group">
-        <button type="submit" class="submit-btn">登録する</button>
+      <div class="flex flex-col gap-1.5">
+        <button
+          type="submit"
+          class="w-full px-3 py-3 bg-gray-800 text-white border-none text-sm cursor-pointer hover:bg-gray-600 transition-colors"
+        >
+          登録する
+        </button>
       </div>
     </form>
 
     <!-- 送信成功メッセージ -->
     <transition name="fade">
-      <div v-if="submitSuccess" class="success-message">✓ 登録が完了しました！</div>
+      <div
+        v-if="submitSuccess"
+        class="mt-5 px-3 py-3 bg-green-50 text-green-800 border border-green-200 text-center"
+      >
+        ✓ 登録が完了しました！
+      </div>
     </transition>
   </div>
 </template>
@@ -130,137 +154,3 @@ const handleSubmit = () => {
   }, 2000);
 };
 </script>
-
-<style scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.registration-form {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 30px;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: normal;
-  color: #333;
-}
-
-label {
-  display: block;
-  margin-bottom: 6px;
-  color: #333;
-  font-size: 14px;
-}
-
-.required {
-  color: #d00;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  border-color: #666;
-  box-shadow: 0 0 0 2px rgba(102, 102, 102, 0.2);
-}
-
-.checkbox-group {
-  margin: 20px 0;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  user-select: none;
-}
-
-input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-.error-message {
-  display: block;
-  color: #d00;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background: #333;
-  color: white;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background: #555;
-}
-
-.success-message {
-  margin-top: 20px;
-  padding: 12px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
-  text-align: center;
-}
-
-/* トランジション効果 */
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.3s ease-in;
-}
-
-.slide-fade-enter-from {
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-.slide-fade-leave-to {
-  transform: translateY(-10px);
-  opacity: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

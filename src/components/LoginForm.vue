@@ -1,37 +1,46 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <h2 class="login-title">ログイン</h2>
-      <form @submit.prevent="handleLogin" class="login-form">
-        <div class="form-group">
-          <label for="email" class="form-label">メールアドレス</label>
+  <div
+    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-5"
+  >
+    <div class="bg-white rounded-xl shadow-2xl p-10 w-full max-w-md">
+      <h2 class="text-center text-gray-800 mb-8 text-3xl font-semibold">ログイン</h2>
+      <form @submit.prevent="handleLogin" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2">
+          <label for="email" class="text-gray-600 font-medium text-sm">メールアドレス</label>
           <input
             id="email"
             v-model="form.email"
             type="email"
-            class="form-input"
+            class="px-4 py-3 border-2 border-gray-200 rounded-lg text-base transition-colors focus:outline-none focus:border-indigo-500"
             placeholder="example@email.com"
             required
           />
         </div>
 
-        <div class="form-group">
-          <label for="password" class="form-label">パスワード</label>
+        <div class="flex flex-col gap-2">
+          <label for="password" class="text-gray-600 font-medium text-sm">パスワード</label>
           <input
             id="password"
             v-model="form.password"
             type="password"
-            class="form-input"
+            class="px-4 py-3 border-2 border-gray-200 rounded-lg text-base transition-colors focus:outline-none focus:border-indigo-500"
             placeholder="パスワードを入力"
             required
           />
         </div>
 
-        <button type="submit" class="login-button" :disabled="isLoading">
+        <button
+          type="submit"
+          class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-none py-4 px-5 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 mt-3 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+          :disabled="isLoading"
+        >
           {{ isLoading ? "ログイン中..." : "ログイン" }}
         </button>
 
-        <div v-if="errorMessage" class="error-message">
+        <div
+          v-if="errorMessage"
+          class="bg-red-50 text-red-600 px-4 py-3 rounded-lg border border-red-200 text-sm text-center"
+        >
           {{ errorMessage }}
         </div>
       </form>
@@ -99,96 +108,3 @@ const handleLogin = async () => {
   }
 };
 </script>
-
-<style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-
-.login-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.login-title {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  color: #555;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.form-input {
-  padding: 12px 16px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.login-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 14px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 10px;
-}
-
-.login-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.login-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.error-message {
-  background: #fee;
-  color: #c33;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #fcc;
-  font-size: 14px;
-  text-align: center;
-}
-</style>

@@ -1,19 +1,38 @@
 <template>
-  <div id="app">
-    <nav class="navbar">
-      <div class="nav-container">
-        <router-link to="/" class="nav-brand"> Task Manager </router-link>
-        <div class="nav-content">
-          <div class="nav-links">
-            <router-link to="/" class="nav-link">ホーム</router-link>
-            <router-link to="/tasks" class="nav-link">タスク</router-link>
-            <router-link to="/profile" class="nav-link">プロフィール</router-link>
+  <div id="app" class="min-h-screen">
+    <nav class="bg-slate-700 shadow-md">
+      <div
+        class="max-w-6xl mx-auto px-5 flex justify-between items-center h-15 md:flex-row flex-col md:h-15 h-auto md:py-0 py-4"
+      >
+        <router-link
+          to="/"
+          class="text-white no-underline text-xl font-semibold hover:text-blue-400 transition-colors duration-300"
+        >
+          Task Manager
+        </router-link>
+        <div class="flex items-center gap-8 md:flex-row flex-col md:gap-8 gap-4 md:mt-0 mt-4">
+          <div class="flex gap-8 md:gap-8 gap-5">
+            <router-link
+              to="/"
+              class="text-white no-underline text-base font-medium transition-colors duration-300 hover:text-blue-400 router-link-active:text-blue-400 router-link-active:border-b-2 router-link-active:border-blue-400"
+              >ホーム</router-link
+            >
+            <router-link
+              to="/tasks"
+              class="text-white no-underline text-base font-medium transition-colors duration-300 hover:text-blue-400 router-link-active:text-blue-400 router-link-active:border-b-2 router-link-active:border-blue-400"
+              >タスク</router-link
+            >
+            <router-link
+              to="/profile"
+              class="text-white no-underline text-base font-medium transition-colors duration-300 hover:text-blue-400 router-link-active:text-blue-400 router-link-active:border-b-2 router-link-active:border-blue-400"
+              >プロフィール</router-link
+            >
           </div>
           <UserMenu />
         </div>
       </div>
     </nav>
-    <main class="main-content">
+    <main class="min-h-[calc(100vh-60px)] md:min-h-[calc(100vh-60px)] min-h-[calc(100vh-90px)]">
       <router-view />
     </main>
   </div>
@@ -22,102 +41,3 @@
 <script setup lang="ts">
 import UserMenu from "./components/UserMenu.vue";
 </script>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-    "Helvetica Neue", sans-serif;
-  background: #f5f5f5;
-}
-
-#app {
-  min-height: 100vh;
-}
-
-.navbar {
-  background: #2c3e50;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-}
-
-.nav-content {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.nav-brand {
-  color: white;
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.nav-brand:hover {
-  color: #3498db;
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav-link:hover {
-  color: #3498db;
-}
-
-.nav-link.router-link-active {
-  color: #3498db;
-  border-bottom: 2px solid #3498db;
-}
-
-.main-content {
-  min-height: calc(100vh - 60px);
-}
-
-@media (max-width: 768px) {
-  .nav-container {
-    flex-direction: column;
-    height: auto;
-    padding: 15px 20px;
-  }
-
-  .nav-content {
-    margin-top: 15px;
-    flex-direction: column;
-    gap: 15px;
-    width: 100%;
-  }
-
-  .nav-links {
-    gap: 20px;
-  }
-
-  .main-content {
-    min-height: calc(100vh - 90px);
-  }
-}
-</style>

@@ -12,129 +12,48 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home-container">
-    <div class="home-card">
-      <h1 class="home-title">タスク管理アプリ</h1>
-      <p class="home-description">ログインしてタスクを管理しましょう</p>
+  <div
+    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-5"
+  >
+    <div class="bg-white rounded-xl shadow-2xl p-10 w-full max-w-lg text-center">
+      <h1 class="text-gray-800 mb-5 text-3xl font-semibold">タスク管理アプリ</h1>
+      <p class="text-gray-600 mb-8 text-base leading-6">ログインしてタスクを管理しましょう</p>
 
-      <div class="home-actions">
-        <router-link to="/login" class="action-button primary"> ログイン </router-link>
-        <router-link to="/profile" class="action-button secondary"> プロフィール </router-link>
+      <div class="flex gap-4 justify-center mb-10">
+        <router-link
+          to="/login"
+          class="px-6 py-3 rounded-lg text-base font-semibold no-underline transition-all duration-200 border-none cursor-pointer inline-block bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:-translate-y-0.5 hover:shadow-lg"
+        >
+          ログイン
+        </router-link>
+        <router-link
+          to="/profile"
+          class="px-6 py-3 rounded-lg text-base font-semibold no-underline transition-all duration-200 border-none cursor-pointer inline-block bg-gray-600 text-white hover:bg-gray-500 hover:-translate-y-0.5"
+        >
+          プロフィール
+        </router-link>
       </div>
 
-      <div class="features">
-        <h3 class="features-title">機能</h3>
-        <ul class="features-list">
-          <li>ユーザー認証</li>
-          <li>タスク管理</li>
-          <li>プロフィール表示</li>
+      <div class="border-t border-gray-200 pt-8">
+        <h3 class="text-gray-800 mb-4 text-xl font-semibold">機能</h3>
+        <ul class="list-none p-0 m-0">
+          <li
+            class="text-gray-600 py-2 text-sm before:content-['✓'] before:text-indigo-500 before:font-bold before:mr-2"
+          >
+            ユーザー認証
+          </li>
+          <li
+            class="text-gray-600 py-2 text-sm before:content-['✓'] before:text-indigo-500 before:font-bold before:mr-2"
+          >
+            タスク管理
+          </li>
+          <li
+            class="text-gray-600 py-2 text-sm before:content-['✓'] before:text-indigo-500 before:font-bold before:mr-2"
+          >
+            プロフィール表示
+          </li>
         </ul>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.home-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-
-.home-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  width: 100%;
-  max-width: 500px;
-  text-align: center;
-}
-
-.home-title {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 32px;
-  font-weight: 600;
-}
-
-.home-description {
-  color: #666;
-  margin-bottom: 30px;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.home-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.action-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: none;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.action-button.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.action-button.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.action-button.secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.action-button.secondary:hover {
-  background: #5a6268;
-  transform: translateY(-2px);
-}
-
-.features {
-  border-top: 1px solid #f0f0f0;
-  padding-top: 30px;
-}
-
-.features-title {
-  color: #333;
-  margin-bottom: 16px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.features-list li {
-  color: #666;
-  padding: 8px 0;
-  font-size: 14px;
-}
-
-.features-list li:before {
-  content: "✓";
-  color: #667eea;
-  font-weight: bold;
-  margin-right: 8px;
-}
-</style>

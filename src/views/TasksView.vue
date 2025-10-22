@@ -1,69 +1,98 @@
 <template>
-  <div class="tasks-container bg-gray-50 min-h-screen p-6">
-    <div class="tasks-header bg-white rounded-lg shadow-md p-6 mb-6">
-      <h1 class="text-3xl font-bold text-gray-800 mb-4">タスク一覧</h1>
+  <div class="max-w-6xl mx-auto p-5 bg-gray-50 min-h-screen">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h1 class="text-3xl font-bold text-slate-700 mb-4">タスク一覧</h1>
       <button
         @click="() => refreshTasks()"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+        class="bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded transition-colors duration-200"
         :disabled="loading"
       >
         {{ loading ? "読み込み中..." : "更新" }}
       </button>
     </div>
 
-    <div class="filters">
-      <div class="filter-group">
+    <div class="flex gap-5 mb-8 p-4 bg-gray-100 rounded-lg md:flex-row flex-col gap-5">
+      <div class="flex items-center gap-2 cursor-pointer text-sm">
         <label>
-          <select v-model="filters.isDone" @change="applyFilters">
+          <select
+            v-model="filters.isDone"
+            @change="applyFilters"
+            class="px-3 py-2 border border-gray-300 rounded bg-white text-sm cursor-pointer focus:outline-none focus:border-blue-500 focus:shadow-sm"
+          >
             <option :value="false">未完了のみ</option>
             <option :value="true">完了のみ</option>
             <option :value="null">すべて表示</option>
           </select>
         </label>
       </div>
-      <div class="filter-group">
-        <label>
-          <input type="checkbox" v-model="filters.isPublic" @change="applyFilters" />
+      <div class="flex items-center gap-2 cursor-pointer text-sm">
+        <label class="flex items-center gap-2 cursor-pointer text-sm">
+          <input type="checkbox" v-model="filters.isPublic" @change="applyFilters" class="m-0" />
           公開タスクのみ
         </label>
       </div>
     </div>
 
-    <div v-if="loading" class="loading">読み込み中...</div>
+    <div v-if="loading" class="text-center py-10 text-base">読み込み中...</div>
 
-    <div v-else-if="errorMessage" class="error">
+    <div v-else-if="errorMessage" class="text-center py-10 text-base text-red-600">
       {{ errorMessage }}
     </div>
 
-    <div v-else-if="tasks.length === 0" class="no-tasks">タスクがありません</div>
+    <div v-else-if="tasks.length === 0" class="text-center py-10 text-base text-gray-500">
+      タスクがありません
+    </div>
 
-    <div v-else class="tasks-list">
-      <div v-for="task in tasks" :key="task.id" class="task-card" @click="goToTaskDetail(task.id)">
-        <div class="task-header">
-          <h3 class="task-title">{{ task.title }}</h3>
-          <div class="task-status">
-            <span :class="['status-badge', task.is_done ? 'done' : 'pending']">
+    <div v-else class="grid gap-5">
+      <div
+        v-for="task in tasks"
+        :key="task.id"
+        class="bg-white border border-gray-200 rounded-lg p-5 cursor-pointer transition-all duration-300 shadow-sm hover:-translate-y-0.5 hover:shadow-md hover:border-blue-500"
+        @click="goToTaskDetail(task.id)"
+      >
+        <div class="flex justify-between items-start mb-2.5">
+          <h3 class="m-0 text-slate-700 text-lg font-semibold">
+            {{ task.title }}
+          </h3>
+          <div class="flex gap-2">
+            <span
+              :class="[
+                'px-2 py-1 rounded-xl text-xs font-medium',
+                task.is_done ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800',
+              ]"
+            >
               {{ task.is_done ? "完了" : "未完了" }}
             </span>
-            <span v-if="task.is_public" class="public-badge"> 公開 </span>
+            <span
+              v-if="task.is_public"
+              class="px-2 py-1 rounded-xl text-xs font-medium bg-blue-100 text-blue-800"
+            >
+              公開
+            </span>
           </div>
         </div>
 
-        <p v-if="task.description" class="task-description">
+        <p v-if="task.description" class="text-gray-600 my-2.5 leading-6">
           {{ task.description }}
         </p>
 
-        <div class="task-meta">
-          <div class="task-info">
-            <span class="created-by"> 作成者: {{ task.created_user.name }} </span>
-            <span v-if="task.expired_at" class="expired-at">
+        <div
+          class="flex justify-between items-end mt-4 text-sm md:flex-row flex-col gap-2.5 items-start"
+        >
+          <div class="flex flex-col gap-1.5">
+            <span class="text-gray-600"> 作成者: {{ task.created_user.name }} </span>
+            <span v-if="task.expired_at" class="text-gray-600 font-medium">
               期限: {{ formatDate(task.expired_at) }}
             </span>
           </div>
 
-          <div v-if="task.assigned_users.length > 0" class="assigned-users">
-            <span class="assigned-label">担当者:</span>
-            <span v-for="user in task.assigned_users" :key="user.id" class="assigned-user">
+          <div v-if="task.assigned_users.length > 0" class="flex flex-wrap gap-1.5 items-center">
+            <span class="text-gray-600 font-medium">担当者:</span>
+            <span
+              v-for="user in task.assigned_users"
+              :key="user.id"
+              class="bg-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-700"
+            >
               {{ user.name }}
             </span>
           </div>
@@ -154,242 +183,3 @@ const formatDate = (dateString: string) => {
   });
 };
 </script>
-
-<style scoped>
-.tasks-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.tasks-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.tasks-header h1 {
-  color: #2c3e50;
-  margin: 0;
-}
-
-.refresh-btn {
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  background: #2980b9;
-}
-
-.refresh-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.filters {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.filter-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.filter-group input[type="checkbox"] {
-  margin: 0;
-}
-
-.filter-group select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.filter-group select:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.loading,
-.error,
-.no-tasks {
-  text-align: center;
-  padding: 40px;
-  font-size: 16px;
-}
-
-.error {
-  color: #e74c3c;
-}
-
-.no-tasks {
-  color: #7f8c8d;
-}
-
-.tasks-list {
-  display: grid;
-  gap: 20px;
-}
-
-.task-card {
-  background: white;
-  border: 1px solid #e1e8ed;
-  border-radius: 8px;
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.task-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-color: #3498db;
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
-}
-
-.task-title {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.task-status {
-  display: flex;
-  gap: 8px;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-badge.done {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-badge.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.public-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  background: #cce5ff;
-  color: #004085;
-}
-
-.task-description {
-  color: #6c757d;
-  margin: 10px 0;
-  line-height: 1.5;
-}
-
-.task-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.task-info {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.created-by,
-.expired-at {
-  color: #6c757d;
-}
-
-.expired-at {
-  font-weight: 500;
-}
-
-.assigned-users {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  align-items: center;
-}
-
-.assigned-label {
-  color: #6c757d;
-  font-weight: 500;
-}
-
-.assigned-user {
-  background: #e9ecef;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #495057;
-}
-
-@media (max-width: 768px) {
-  .tasks-container {
-    padding: 15px;
-  }
-
-  .tasks-header {
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
-  }
-
-  .filters {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .task-header {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .task-status {
-    align-self: flex-start;
-  }
-
-  .task-meta {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-}
-</style>
