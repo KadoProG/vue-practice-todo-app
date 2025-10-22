@@ -10,8 +10,11 @@
     <div class="filters">
       <div class="filter-group">
         <label>
-          <input type="checkbox" v-model="filters.isDone" @change="applyFilters" />
-          完了済みも表示
+          <select v-model="filters.isDone" @change="applyFilters">
+            <option :value="false">未完了のみ</option>
+            <option :value="true">完了のみ</option>
+            <option :value="null">すべて表示</option>
+          </select>
         </label>
       </div>
       <div class="filter-group">
@@ -75,7 +78,7 @@ const router = useRouter();
 
 // フィルター
 const filters = ref({
-  isDone: false,
+  isDone: null as boolean | null,
   isPublic: false,
 });
 
@@ -205,6 +208,21 @@ const formatDate = (dateString: string) => {
 
 .filter-group input[type="checkbox"] {
   margin: 0;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 .loading,
