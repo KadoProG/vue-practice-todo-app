@@ -1,92 +1,141 @@
 <template>
-  <div class="task-detail-container">
-    <div v-if="loading" class="loading">読み込み中...</div>
+  <div class="max-w-4xl mx-auto p-5">
+    <div v-if="loading" class="text-center py-10 text-base">読み込み中...</div>
 
-    <div v-else-if="error" class="error">
+    <div v-else-if="error" class="text-center py-10 text-base text-red-600">
       {{ error }}
     </div>
 
-    <div v-else-if="task" class="task-detail">
+    <div v-else-if="task" class="bg-white rounded-lg shadow-md overflow-hidden">
       <!-- ヘッダー -->
-      <div class="task-header">
-        <div class="header-left">
-          <button @click="goBack" class="back-btn">← 戻る</button>
-          <h1 class="task-title">{{ task.title }}</h1>
+      <div
+        class="flex justify-between items-start p-8 bg-gray-50 border-b border-gray-200 md:flex-row flex-col md:gap-0 gap-5"
+      >
+        <div
+          class="flex items-center gap-5 md:flex-row flex-col md:gap-5 gap-4 md:items-center items-stretch"
+        >
+          <button
+            @click="goBack"
+            class="bg-gray-600 hover:bg-gray-700 text-white border-none px-4 py-2 rounded-md cursor-pointer text-sm transition-colors duration-300"
+          >
+            ← 戻る
+          </button>
+          <h1 class="m-0 text-slate-700 text-3xl font-semibold md:text-3xl text-2xl">
+            {{ task.title }}
+          </h1>
         </div>
-        <div class="header-right">
-          <span :class="['status-badge', task.is_done ? 'done' : 'pending']">
+        <div class="flex gap-2.5 md:flex-row flex-col md:gap-2.5 gap-2 md:self-start self-start">
+          <span
+            :class="[
+              'px-3 py-1.5 rounded-full text-sm font-medium',
+              task.is_done ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800',
+            ]"
+          >
             {{ task.is_done ? "完了" : "未完了" }}
           </span>
-          <span v-if="task.is_public" class="public-badge"> 公開 </span>
+          <span
+            v-if="task.is_public"
+            class="px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+          >
+            公開
+          </span>
         </div>
       </div>
 
       <!-- タスク情報 -->
-      <div class="task-info">
-        <div class="info-section">
-          <h3>基本情報</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <label>作成者</label>
-              <span>{{ task.created_user.name }}</span>
+      <div class="p-8">
+        <div class="mb-8">
+          <h3 class="text-slate-700 text-lg font-semibold m-0 mb-4 pb-2 border-b-2 border-gray-200">
+            基本情報
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="font-medium text-gray-600 text-sm">作成者</label>
+              <span class="text-slate-700 text-base">{{ task.created_user.name }}</span>
             </div>
-            <div class="info-item">
-              <label>作成日時</label>
-              <span>{{ formatDate(task.created_at) }}</span>
+            <div class="flex flex-col gap-1">
+              <label class="font-medium text-gray-600 text-sm">作成日時</label>
+              <span class="text-slate-700 text-base">{{ formatDate(task.created_at) }}</span>
             </div>
-            <div class="info-item" v-if="task.expired_at">
-              <label>期限</label>
-              <span :class="{ expired: isExpired(task.expired_at) }">
+            <div class="flex flex-col gap-1" v-if="task.expired_at">
+              <label class="font-medium text-gray-600 text-sm">期限</label>
+              <span
+                :class="[
+                  'text-base',
+                  isExpired(task.expired_at) ? 'text-red-600 font-medium' : 'text-slate-700',
+                ]"
+              >
                 {{ formatDate(task.expired_at) }}
               </span>
             </div>
-            <div class="info-item">
-              <label>最終更新</label>
-              <span>{{ formatDate(task.updated_at) }}</span>
+            <div class="flex flex-col gap-1">
+              <label class="font-medium text-gray-600 text-sm">最終更新</label>
+              <span class="text-slate-700 text-base">{{ formatDate(task.updated_at) }}</span>
             </div>
           </div>
         </div>
 
-        <div class="info-section" v-if="task.description">
-          <h3>説明</h3>
-          <div class="description">
+        <div class="mb-8" v-if="task.description">
+          <h3 class="text-slate-700 text-lg font-semibold m-0 mb-4 pb-2 border-b-2 border-gray-200">
+            説明
+          </h3>
+          <div class="bg-gray-50 p-4 rounded-md leading-relaxed text-slate-700 whitespace-pre-line">
             {{ task.description }}
           </div>
         </div>
 
-        <div class="info-section" v-if="task.assigned_users.length > 0">
-          <h3>担当者</h3>
-          <div class="assigned-users">
-            <div v-for="user in task.assigned_users" :key="user.id" class="assigned-user">
-              <div class="user-info">
-                <span class="user-name">{{ user.name }}</span>
-                <span class="user-email">{{ user.email }}</span>
+        <div class="mb-8" v-if="task.assigned_users.length > 0">
+          <h3 class="text-slate-700 text-lg font-semibold m-0 mb-4 pb-2 border-b-2 border-gray-200">
+            担当者
+          </h3>
+          <div class="grid gap-2.5">
+            <div
+              v-for="user in task.assigned_users"
+              :key="user.id"
+              class="bg-gray-50 p-4 rounded-md border-l-4 border-blue-500"
+            >
+              <div class="flex flex-col gap-1">
+                <span class="font-medium text-slate-700">{{ user.name }}</span>
+                <span class="text-sm text-gray-600">{{ user.email }}</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- アクション一覧 -->
-        <div class="info-section">
-          <h3>アクション</h3>
-          <div v-if="actionsLoading" class="loading-small">読み込み中...</div>
-          <div v-else-if="errorMessage" class="error-small">
+        <div class="mb-8">
+          <h3 class="text-slate-700 text-lg font-semibold m-0 mb-4 pb-2 border-b-2 border-gray-200">
+            アクション
+          </h3>
+          <div v-if="actionsLoading" class="text-center py-5 text-gray-600">読み込み中...</div>
+          <div v-else-if="errorMessage" class="text-center py-5 text-red-600">
             {{ errorMessage }}
           </div>
-          <div v-else-if="actions.length === 0" class="no-actions">アクションがありません</div>
-          <div v-else class="actions-list">
-            <div v-for="action in actions" :key="action.id" class="action-item">
-              <div class="action-content">
-                <div class="action-header">
-                  <span :class="['action-status', action.is_done ? 'done' : 'pending']">
+          <div v-else-if="actions.length === 0" class="text-center py-5 text-gray-600">
+            アクションがありません
+          </div>
+          <div v-else class="grid gap-2.5">
+            <div
+              v-for="action in actions"
+              :key="action.id"
+              class="bg-gray-50 p-4 rounded-md border-l-4 border-gray-600"
+            >
+              <div class="flex justify-between items-start md:flex-row flex-col md:gap-0 gap-2.5">
+                <div class="flex items-center gap-2.5">
+                  <span
+                    :class="[
+                      'px-2 py-1 rounded-full text-xs font-medium',
+                      action.is_done
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-yellow-100 text-yellow-800',
+                    ]"
+                  >
                     {{ action.is_done ? "完了" : "未完了" }}
                   </span>
-                  <span class="action-name">{{ action.name }}</span>
+                  <span class="font-medium text-slate-700">{{ action.name }}</span>
                 </div>
-                <div class="action-meta">
-                  <span class="action-date">
-                    {{ formatDate(action.created_at) }}
-                  </span>
+                <div class="text-sm text-gray-600">
+                  {{ formatDate(action.created_at) }}
                 </div>
               </div>
             </div>
@@ -95,15 +144,30 @@
       </div>
 
       <!-- アクションボタン -->
-      <div class="task-actions">
+      <div class="flex gap-4 p-8 bg-gray-50 border-t border-gray-200 md:flex-row flex-col">
         <button
           @click="toggleTaskStatus"
-          :class="['action-btn', task.is_done ? 'mark-pending' : 'mark-done']"
+          :class="[
+            'px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300',
+            task.is_done
+              ? 'bg-yellow-500 hover:bg-yellow-600 text-gray-900'
+              : 'bg-green-500 hover:bg-green-600 text-white',
+          ]"
         >
           {{ task.is_done ? "未完了に戻す" : "完了にする" }}
         </button>
-        <button @click="editTask" class="action-btn edit">編集</button>
-        <button @click="deleteTask" class="action-btn delete">削除</button>
+        <button
+          @click="editTask"
+          class="px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 bg-blue-500 hover:bg-blue-600 text-white"
+        >
+          編集
+        </button>
+        <button
+          @click="deleteTask"
+          class="px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 bg-red-500 hover:bg-red-600 text-white"
+        >
+          削除
+        </button>
       </div>
     </div>
   </div>
@@ -220,332 +284,3 @@ const isExpired = (expiredAt: string) => {
   return new Date(expiredAt) < new Date();
 };
 </script>
-
-<style scoped>
-.task-detail-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.loading,
-.error {
-  text-align: center;
-  padding: 40px;
-  font-size: 16px;
-}
-
-.error {
-  color: #e74c3c;
-}
-
-.task-detail {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 30px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e1e8ed;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.back-btn {
-  background: #6c757d;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.back-btn:hover {
-  background: #5a6268;
-}
-
-.task-title {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.header-right {
-  display: flex;
-  gap: 10px;
-}
-
-.status-badge,
-.public-badge {
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.status-badge.done {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-badge.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.public-badge {
-  background: #cce5ff;
-  color: #004085;
-}
-
-.task-info {
-  padding: 30px;
-}
-
-.info-section {
-  margin-bottom: 30px;
-}
-
-.info-section h3 {
-  color: #2c3e50;
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0 0 15px 0;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.info-item label {
-  font-weight: 500;
-  color: #6c757d;
-  font-size: 14px;
-}
-
-.info-item span {
-  color: #2c3e50;
-  font-size: 16px;
-}
-
-.info-item span.expired {
-  color: #e74c3c;
-  font-weight: 500;
-}
-
-.description {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 5px;
-  line-height: 1.6;
-  color: #2c3e50;
-  white-space: pre-line;
-}
-
-.assigned-users {
-  display: grid;
-  gap: 10px;
-}
-
-.assigned-user {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 5px;
-  border-left: 4px solid #3498db;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.user-name {
-  font-weight: 500;
-  color: #2c3e50;
-}
-
-.user-email {
-  font-size: 14px;
-  color: #6c757d;
-}
-
-.loading-small,
-.error-small,
-.no-actions {
-  text-align: center;
-  padding: 20px;
-  color: #6c757d;
-}
-
-.error-small {
-  color: #e74c3c;
-}
-
-.actions-list {
-  display: grid;
-  gap: 10px;
-}
-
-.action-item {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 5px;
-  border-left: 4px solid #6c757d;
-}
-
-.action-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.action-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.action-status {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.action-status.done {
-  background: #d4edda;
-  color: #155724;
-}
-
-.action-status.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.action-name {
-  font-weight: 500;
-  color: #2c3e50;
-}
-
-.action-meta {
-  font-size: 14px;
-  color: #6c757d;
-}
-
-.task-actions {
-  display: flex;
-  gap: 15px;
-  padding: 30px;
-  background: #f8f9fa;
-  border-top: 1px solid #e1e8ed;
-}
-
-.action-btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s;
-}
-
-.action-btn.mark-done {
-  background: #28a745;
-  color: white;
-}
-
-.action-btn.mark-done:hover {
-  background: #218838;
-}
-
-.action-btn.mark-pending {
-  background: #ffc107;
-  color: #212529;
-}
-
-.action-btn.mark-pending:hover {
-  background: #e0a800;
-}
-
-.action-btn.edit {
-  background: #007bff;
-  color: white;
-}
-
-.action-btn.edit:hover {
-  background: #0056b3;
-}
-
-.action-btn.delete {
-  background: #dc3545;
-  color: white;
-}
-
-.action-btn.delete:hover {
-  background: #c82333;
-}
-
-@media (max-width: 768px) {
-  .task-detail-container {
-    padding: 15px;
-  }
-
-  .task-header {
-    flex-direction: column;
-    gap: 20px;
-    align-items: stretch;
-  }
-
-  .header-left {
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
-  }
-
-  .task-title {
-    font-size: 24px;
-  }
-
-  .header-right {
-    align-self: flex-start;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .task-actions {
-    flex-direction: column;
-  }
-
-  .action-content {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-</style>
