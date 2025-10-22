@@ -10,6 +10,7 @@ Vue 3 で作成した TODO アプリケーション。
 ## セットアップ
 
 ```shell
+cp .env.example .env
 npm ci
 npm run dev
 # http://localhost:5173 にて起動
