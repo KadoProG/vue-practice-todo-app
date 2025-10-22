@@ -3,11 +3,13 @@
     <nav class="navbar">
       <div class="nav-container">
         <router-link to="/" class="nav-brand"> Task Manager </router-link>
-        <div class="nav-links">
-          <router-link to="/" class="nav-link">ホーム</router-link>
-          <router-link to="/tasks" class="nav-link">タスク</router-link>
-          <router-link to="/profile" class="nav-link">プロフィール</router-link>
-          <router-link to="/login" class="nav-link">ログイン</router-link>
+        <div class="nav-content">
+          <div class="nav-links">
+            <router-link to="/" class="nav-link">ホーム</router-link>
+            <router-link to="/tasks" class="nav-link">タスク</router-link>
+            <router-link to="/profile" class="nav-link">プロフィール</router-link>
+          </div>
+          <UserMenu />
         </div>
       </div>
     </nav>
@@ -16,6 +18,10 @@
     </main>
   </div>
 </template>
+
+<script setup lang="ts">
+import UserMenu from "./components/UserMenu.vue";
+</script>
 
 <style>
 * {
@@ -47,6 +53,12 @@ body {
   justify-content: space-between;
   align-items: center;
   height: 60px;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
 }
 
 .nav-brand {
@@ -93,8 +105,14 @@ body {
     padding: 15px 20px;
   }
 
-  .nav-links {
+  .nav-content {
     margin-top: 15px;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .nav-links {
     gap: 20px;
   }
 

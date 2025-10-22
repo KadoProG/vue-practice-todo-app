@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import router from "./router";
 import { setAuthToken } from "./api/client";
@@ -18,6 +19,9 @@ const initializeAuth = () => {
 initializeAuth();
 
 const app = createApp(App);
+
+// Pinia プラグインを追加
+app.use(createPinia());
 
 // Vue Router プラグインを追加
 app.use(router);
