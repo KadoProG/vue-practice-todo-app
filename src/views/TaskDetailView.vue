@@ -44,7 +44,13 @@
 
       <!-- タスク情報 -->
       <div class="p-8">
-        <TaskInfo :task="task" />
+        <TaskInfo
+          :task="task"
+          :is-editing="isEditing"
+          @edit="editTask"
+          @save="saveEdit"
+          @cancel="cancelEdit"
+        />
 
         <!-- アクション一覧 -->
         <TaskActions
@@ -58,6 +64,7 @@
       <!-- アクションボタン -->
       <div class="flex gap-4 p-8 bg-gray-50 border-t border-gray-200 md:flex-row flex-col">
         <button
+          v-if="!isEditing"
           @click="toggleTaskStatus"
           :class="[
             'px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300',
@@ -69,12 +76,7 @@
           {{ task.is_done ? "未完了に戻す" : "完了にする" }}
         </button>
         <button
-          @click="editTask"
-          class="px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 bg-blue-500 hover:bg-blue-600 text-white"
-        >
-          編集
-        </button>
-        <button
+          v-if="!isEditing"
           @click="deleteTask"
           class="px-6 py-3 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 bg-red-500 hover:bg-red-600 text-white"
         >
@@ -86,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useTask, useTaskActions, useUpdateTask, useDeleteTask } from "@/api/hooks";
 import TaskInfo from "@/components/TaskInfo.vue";
@@ -94,6 +96,9 @@ import TaskActions from "@/components/TaskActions.vue";
 
 const router = useRouter();
 const route = useRoute();
+
+// 編集モードの状態管理
+const isEditing = ref(false);
 
 // タスクIDを取得
 const taskId = computed(() => {
@@ -161,8 +166,32 @@ const toggleTaskStatus = async () => {
 
 // タスク編集
 const editTask = () => {
-  // 編集画面への遷移（実装予定）
-  console.log("Edit task:", task.value?.id);
+  isEditing.value = true;
+};
+
+// 編集キャンセル
+const cancelEdit = () => {
+  isEditing.value = false;
+};
+
+// 編集保存
+const saveEdit = async (formData: {
+  title: string;
+  description: string | null;
+  assigned_user_ids: number[];
+  expired_at: string | null;
+}) => {
+  if (!task.value) return;
+
+  try {
+    await updateTaskMutation.mutateAsync({
+      taskId: task.value.id,
+      data: formData,
+    });
+    isEditing.value = false;
+  } catch (err) {
+    console.error("Error updating task:", err);
+  }
 };
 
 // タスク削除
