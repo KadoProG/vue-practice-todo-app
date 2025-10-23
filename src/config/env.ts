@@ -5,6 +5,7 @@
 
 interface EnvConfig {
   apiBaseUrl: string;
+  baseUrl: string;
   isDevelopment: boolean;
   isProduction: boolean;
 }
@@ -15,6 +16,7 @@ interface EnvConfig {
 function loadEnvConfig(): EnvConfig {
   // 環境変数から値を取得（デフォルト値を設定）
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const baseUrl = import.meta.env.BASE_URL || "/";
 
   // 開発環境・本番環境の判定
   const isDevelopment = import.meta.env.DEV;
@@ -27,6 +29,7 @@ function loadEnvConfig(): EnvConfig {
 
   return {
     apiBaseUrl,
+    baseUrl,
     isDevelopment,
     isProduction,
   };
