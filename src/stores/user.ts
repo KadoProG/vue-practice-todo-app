@@ -2,11 +2,10 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { apiClientWithRetry, clearAuthToken } from "@/api/client";
 import { useLogout } from "@/api/hooks";
-import type { paths } from "@/types/api";
+import type { components } from "@/types/api";
 
 // 型定義
-type UserResource =
-  paths["/v1/users/me"]["get"]["responses"][200]["content"]["application/json"]["user"];
+type UserResource = components["schemas"]["UserResource"];
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<UserResource | null>(null);
