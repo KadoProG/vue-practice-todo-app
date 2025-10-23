@@ -87,7 +87,7 @@
           <label class="font-medium text-gray-600 text-sm">期限</label>
           <input
             v-model="editForm.expired_at"
-            type="date"
+            type="datetime-local"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="期限を選択"
           />
@@ -175,12 +175,38 @@ const emit = defineEmits<Emits>();
 const { data: usersData } = useUsers();
 const users = computed(() => usersData.value?.users || []);
 
+// ISO8601形式をYYYY-MM-DDThh:mm形式に変換（input type="datetime-local"用）
+const convertIsoToDatetime = (isoString: string | null): string => {
+  if (!isoString) return "";
+  // ISO8601 (例: 2025-10-23T14:30:00Z) を datetime-local形式 (例: 2025-10-23T14:30) に変換
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+// YYYY-MM-DDThh:mm形式をISO8601形式に変換（API送信用）
+const convertDatetimeToIso = (datetimeString: string | null): string | null => {
+  if (!datetimeString) return null;
+  // datetime-local形式をISO8601形式に変換
+  const date = new Date(datetimeString);
+  return date.toISOString();
+};
+
 // 編集フォームのデータ
-const editForm = ref({
+const editForm = ref<{
+  title: string;
+  description: string;
+  assigned_user_ids: number[];
+  expired_at: string;
+}>({
   title: "",
   description: "",
   assigned_user_ids: [] as number[],
-  expired_at: props.task.expired_at,
+  expired_at: convertIsoToDatetime(props.task.expired_at),
 });
 
 // 編集モードが変更されたときにフォームを初期化
@@ -192,7 +218,7 @@ watch(
         title: props.task.title,
         description: props.task.description || "",
         assigned_user_ids: props.task.assigned_users.map((user) => user.id),
-        expired_at: props.task.expired_at,
+        expired_at: convertIsoToDatetime(props.task.expired_at),
       };
     }
   },
@@ -210,7 +236,7 @@ const handleSubmit = () => {
     title: editForm.value.title,
     description: editForm.value.description || null,
     assigned_user_ids: editForm.value.assigned_user_ids,
-    expired_at: editForm.value.expired_at || null,
+    expired_at: convertDatetimeToIso(editForm.value.expired_at),
   });
 };
 
